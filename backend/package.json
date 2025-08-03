@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "npm run db:setup && nodemon server.js",
-    "build": "npm install && npm run db:generate && npm run db:deploy",
+    "build": "npm install",
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
@@ -14,6 +14,7 @@
     "db:reset": "prisma migrate reset --force",
     "db:studio": "prisma studio",
     "db:setup": "npm run db:generate && npm run db:migrate",
+    "vercel-build": "prisma generate && prisma migrate deploy",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["linkedin", "community", "social", "platform"],
