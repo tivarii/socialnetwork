@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "npm run db:setup && nodemon server.js",
-    "build": "npm install && npm run db:setup",
+    "build": "npm install && npm run db:generate && npm run db:deploy",
+    "postinstall": "prisma generate",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
@@ -30,5 +31,8 @@
   "devDependencies": {
     "nodemon": "^3.0.2",
     "prisma": "^5.7.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

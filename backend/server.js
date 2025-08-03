@@ -48,15 +48,20 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`API available at http://localhost:${PORT}`);
-});
+// Start server (only if not imported)
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`API available at http://localhost:${PORT}`);
+  });
+}
 
 // Graceful shutdown
 process.on('SIGINT', async () => {
   await prisma.$disconnect();
   process.exit(0);
 });
+
+// Export for Vercel
+module.exports = app;
