@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "npm run db:setup && nodemon server.js",
-    "build": "npm install",
+    "build": "npm install && npm run db:setup",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
