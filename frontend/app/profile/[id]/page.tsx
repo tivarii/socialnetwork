@@ -23,13 +23,22 @@ interface Post {
   createdAt: string
 }
 
-export default function ProfilePage({ params }: { params: { id: string } }) {
+export default function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
+  const [userId, setUserId] = useState<string | null>(null)
   const { user } = useAuth()
   const router = useRouter()
   const [isEditingProfile, setIsEditingProfile] = useState(false)
+
+  useEffect(() => {
+    const resolveParams = async () => {
+      const resolvedParams = await params
+      setUserId(resolvedParams.id)
+    }
+    resolveParams()
+  }, [params])
 
   useEffect(() => {
     if (!user) {
@@ -37,12 +46,14 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
       return
     }
 
+    if (!userId) return
+
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem("token")
 
         // Fetch user profile
-        const userResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${params.id}`, {
+        const userResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/users/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -54,7 +65,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
         }
 
         // Fetch user's posts
-        const postsResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/user/${params.id}`, {
+        const postsResponse = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/posts/user/${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -72,7 +83,7 @@ export default function ProfilePage({ params }: { params: { id: string } }) {
     }
 
     fetchProfile()
-  }, [params.id, user, router])
+  }, [userId, user, router])
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
